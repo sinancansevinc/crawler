@@ -35,13 +35,17 @@ namespace crawler.Context
 
             modelBuilder.Entity<SportCar>(entity =>
             {
-                entity.HasNoKey();
-
                 entity.ToTable("SportCar");
 
-                entity.Property(e => e.Id).ValueGeneratedOnAdd();
+                entity.Property(e => e.Location).IsRequired();
 
-                entity.Property(e => e.Price).HasColumnType("decimal(8, 2)");
+                entity.Property(e => e.Price).IsRequired();
+
+                entity.Property(e => e.Title).IsRequired();
+
+                entity.Property(e => e.Year)
+                    .IsRequired()
+                    .HasMaxLength(50);
             });
 
             OnModelCreatingPartial(modelBuilder);

@@ -1,0 +1,25 @@
+﻿@model List<crawler.Models.SportCar>
+
+<table class="table table-dark">
+	<thead>
+		<tr>
+			<th scope="col">#</th>
+			<th scope="col">İsim</th>
+			<th scope="col">Fiyat</th>
+			<th scope="col">Yıl</th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var item in Model)
+		{
+			<tr>
+				<th scope="row">@item.Id</th>
+				<td>@item.Title</td>
+				<td>@item.Price</td>
+				<td>@item.Year</td>
+			</tr>
+		}
+
+
+	</tbody>
+</table>

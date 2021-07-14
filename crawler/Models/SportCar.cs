@@ -9,8 +9,8 @@ namespace crawler.Models
     {
         public int Id { get; set; }
         public string Title { get; set; }
-        public decimal? Price { get; set; }
+        public string Price { get; set; }
         public string Location { get; set; }
-        public int? Year { get; set; }
+        public string Year { get; set; }
     }
 }

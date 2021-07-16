@@ -52,7 +52,7 @@ namespace crawler.Controllers
 				button.Click();
 
 				var search = driver.FindElementById("small-searchterms");
-				search.SendKeys("220");
+				search.SendKeys(q);
 				var button2 = driver.FindElementByXPath("//input[@value='ARA']");
 
 				button2.Click();

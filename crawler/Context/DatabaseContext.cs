@@ -18,14 +18,14 @@ namespace crawler.Context
         {
         }
 
-        public virtual DbSet<SportCar> SportCars { get; set; }
+        public virtual DbSet<Product> Products { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Server=(localdb)\\MSSQLLocalDB;Database=webcrawler;Trusted_Connection=True;MultipleActiveResultSets=true;");
+                optionsBuilder.UseSqlServer("Server=(localdb)\\MSSQLLocalDB;Database=crawler;Trusted_Connection=True;MultipleActiveResultSets=true;");
             }
         }
 
@@ -33,19 +33,13 @@ namespace crawler.Context
         {
             modelBuilder.HasAnnotation("Relational:Collation", "SQL_Latin1_General_CP1_CI_AS");
 
-            modelBuilder.Entity<SportCar>(entity =>
+            modelBuilder.Entity<Product>(entity =>
             {
-                entity.ToTable("SportCar");
+                entity.ToTable("Product");
 
-                entity.Property(e => e.Location).IsRequired();
+                entity.Property(e => e.StockCode).IsRequired();
 
-                entity.Property(e => e.Price).IsRequired();
-
-                entity.Property(e => e.Title).IsRequired();
-
-                entity.Property(e => e.Year)
-                    .IsRequired()
-                    .HasMaxLength(50);
+                entity.Property(e => e.StockName).IsRequired();
             });
 
             OnModelCreatingPartial(modelBuilder);

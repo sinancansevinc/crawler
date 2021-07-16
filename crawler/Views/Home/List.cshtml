@@ -1,12 +1,13 @@
-﻿@model List<crawler.Models.SportCar>
+﻿@model List<crawler.Models.Product>
 
 <table class="table table-dark">
 	<thead>
 		<tr>
 			<th scope="col">#</th>
-			<th scope="col">İsim</th>
+			<th scope="col">Stok Kodu</th>
+			<th scope="col">Stok İsmi</th>
+			<th scope="col">Marka</th>
 			<th scope="col">Fiyat</th>
-			<th scope="col">Yıl</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -14,9 +15,10 @@
 		{
 			<tr>
 				<th scope="row">@item.Id</th>
-				<td>@item.Title</td>
+				<td>@item.StockCode</td>
+				<td>@item.StockName</td>
+				<td>@item.Brand</td>
 				<td>@item.Price</td>
-				<td>@item.Year</td>
 			</tr>
 		}
 

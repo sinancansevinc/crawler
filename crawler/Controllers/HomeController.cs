@@ -3,107 +3,89 @@ using crawler.Models;
 using HtmlAgilityPack;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using OpenQA.Selenium;
+using OpenQA.Selenium.Chrome;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace crawler.Controllers
 {
 	public class HomeController : Controller
 	{
+		private readonly DatabaseContext _db;
 
-
-		public HomeController()
+		public HomeController(DatabaseContext db)
 		{
-
+			_db = db;
 		}
 
 		public IActionResult Index()
 		{
+			
+
+
 			return View();
+		}
+
+		public IActionResult AddDatabase(string q ) {
+
+			using (var driver = new ChromeDriver())
+			{
+				driver.Navigate().GoToUrl("https://b2b.haskar.com.tr/giris?ReturnUrl=%2f");
+
+				var user = driver.FindElementById("Email");
+				var pass = driver.FindElementById("Password");
+
+				var button = driver.FindElementByXPath("//input[@value='GİRİŞ']");
+
+				user.SendKeys("coskunlastikjant@gmail.com");
+				pass.SendKeys("111111");
+
+				button.Click();
+
+				var search = driver.FindElementById("small-searchterms");
+				search.SendKeys("220");
+				var button2 = driver.FindElementByXPath("//input[@value='ARA']");
+
+				button2.Click();
+
+				var result2 = driver.FindElementsByClassName("item-box_list_row");
+
+
+
+				foreach (var item in result2)
+				{
+					Product product = new Product();
+					product.StockCode = item.FindElement(By.ClassName("kodu")).Text;
+					product.StockName = item.FindElement(By.ClassName("adi")).Text;
+					product.Brand = item.FindElement(By.ClassName("marka")).Text;
+					product.Price = item.FindElement(By.ClassName("KdvHaricNetFiyat")).Text;
+
+					_db.Products.Add(product);
+					_db.SaveChanges();
+				}
+				
+			}
+
+			return RedirectToAction("List");
+
+
 		}
 
 		public IActionResult List()
 		{
-			var db = new DatabaseContext();            
-		    return View(db.SportCars.ToList());
+			return View(_db.Products.ToList());
 		}
-		
-		public IActionResult Search(string q)
-		{
 
-			StartCrowlerAsync(q);
-			return RedirectToAction("List");
-
-		}
-		public static async Task StartCrowlerAsync(string q)
-		{
-
-
-			q = q.ToLower();
-			var url = "https://www.arabam.com/ikinci-el?searchText=" + q;
-			var httpClient = new HttpClient();
-			var html = await httpClient.GetStringAsync(url);
-
-			var htmlDocument = new HtmlDocument();
-
-			htmlDocument.LoadHtml(html);
-			var tr = htmlDocument.DocumentNode.Descendants("tr").Where(node => node.GetAttributeValue("class", "").Contains("listing-list-item")).ToList();
-
-			foreach (var item in tr)
-			{SportCar car = new SportCar();
-				car.Title = item.Descendants("td").Where(p => p.GetAttributeValue("class", "").Equals("listing-modelname pr")).FirstOrDefault().InnerText;
-
-				car.Year =item.Descendants("td").Where(p => p.GetAttributeValue("class", "").Equals("listing-text pl8 pr8 tac pr")).FirstOrDefault().InnerText;
-
-				var priceTd = item.Descendants("td").Where(p => p.GetAttributeValue("class", "").Equals("pl8 pr8 tac pr")).FirstOrDefault().InnerText;
-
-				//priceTd = priceTd.Substring(0, priceTd.Length - 4);
-
-				car.Price = priceTd;
-
-				var locationTd = item.Descendants("td").Where(p => p.GetAttributeValue("class", "").Equals("listing-text pl8 pr8 tac pr")).LastOrDefault();
-				car.Location = locationTd.Descendants("div").Where(p => p.GetAttributeValue("class", "").Equals(" fade-out-content-wrapper")).FirstOrDefault().InnerText;
-				using (var db=new DatabaseContext())
-				{
-					db.SportCars.Add(car);
-					await db.SaveChangesAsync();
-				}
-				
-				//carPrice = carPrice.Replace("  ", "");
-
-
-
-				//await _db.SportCars.AddAsync(car);
-				//await _db.SaveChangesAsync();
-				
-
-		
-
-
-				//carPrice = carPrice.Replace("\n", "");
-			}
-		}
-		//public void AddDatabase(SportCar car)
-		//{
-		//	try
-		//	{
-		//		_db.SportCars.AddAsync(car);
-		//		_db.SaveChangesAsync();
-		//	}
-		//	catch (Exception)
-		//	{
-
-		//		Console.WriteLine("Hata");
-		//	}
-
-
-		//}
-
+	
 
 	}
 }

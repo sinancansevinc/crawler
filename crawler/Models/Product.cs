@@ -5,12 +5,12 @@ using System.Collections.Generic;
 
 namespace crawler.Models
 {
-    public partial class SportCar
+    public partial class Product
     {
         public int Id { get; set; }
-        public string Title { get; set; }
+        public string StockCode { get; set; }
+        public string StockName { get; set; }
+        public string Brand { get; set; }
         public string Price { get; set; }
-        public string Location { get; set; }
-        public string Year { get; set; }
     }
 }
